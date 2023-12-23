@@ -7,8 +7,12 @@ echo "Courtesy of The on-line hacker Jargon File, version 4.4.7"
 BASE_URL="http://www.catb.org/jargon/html/"
 URL="http://www.catb.org/jargon/html/go01.html"
 
-LINKS=$(timeout 2s curl -s "$URL" | grep -o '<a [^>]*href="[^"]*"[^>]*>' | sed 's/<a [^>]*href="\([^"]*\)"[^>]*>/\1/g' | grep -E '[A-Z0-9]/[^/]+\.html')
-
+if LINKS=$(timeout 2s curl -s "$URL"); then
+    LINKS=$(echo "$LINKS" | grep -o '<a [^>]*href="[^"]*"[^>]*>' | sed 's/<a [^>]*href="\([^"]*\)"[^>]*>/\1/g' | grep -E '[A-Z0-9]/[^/]+\.html')
+else
+    echo "Error: Unable to fetch content from $URL due to a timeout or possible connection problems"
+    exit 1
+fi
 
 if [ -z "$LINKS" ]; then
     echo "No links found on the webpage."
@@ -20,7 +24,6 @@ IFS=$'\n' read -rd '' -a LINK_ARRAY <<< "$LINKS"
 TOTAL_LINKS="${#LINK_ARRAY[@]}"
 RANDOM_INDEX=$((RANDOM % TOTAL_LINKS))
 RANDOM_LINK="${LINK_ARRAY[RANDOM_INDEX]}"
-echo $RANDOM_LINK
 FULL_URL="$BASE_URL$RANDOM_LINK"
 
 # echo "$FULL_URL"
