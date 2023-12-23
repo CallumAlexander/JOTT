@@ -10,7 +10,7 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [ ] Install instructions on README.md
 - [ ] Option for `n` number of random definition requests
 - [ ] Punctuation and Grammar inclusion if applicable for the term
-- [ ] Handling when the source is down
+- [x] Handling when the source is down
 - [X] Exclude subdirectories in the random search
 - [ ] Specify the request timeout - default is 2 seconds currently
 - [ ] Fix handling and removal of `<i>` tags
