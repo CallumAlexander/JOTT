@@ -4,7 +4,7 @@ source jott.cfg
 
 echo "JOTT"
 echo "Jargon Of The Terminal"
-echo "Courtesy of The on-line hacker Jargon File, version 4.4.7"
+echo -e "Courtesy of The on-line hacker Jargon File, version 4.4.7\n"
 
 BASE_URL="http://www.catb.org/jargon/html/"
 URL="http://www.catb.org/jargon/html/go01.html"
@@ -42,11 +42,11 @@ DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')  # Removes newlines
 DEFINITION=$(echo "$DEFINITION" | sed 's/  */ /g')  # Removes any doublespaces
 
 # Apply ANSI escape code replacement for proper unicode characters
-DEFINITION=$(echo "$DEFINITION" | sed 's/&#8220;/"/g')
-DEFINITION=$(echo "$DEFINITION" | sed 's/&#8221;/"/g')
-DEFINITION=$(echo "$DEFINITION" | sed 's/&#8216;/'\''/g')
-DEFINITION=$(echo "$DEFINITION" | sed 's/&#8217;/'\''/g')
-DEFINITION=$(echo "$DEFINITION" | sed 's/&#8212;/'—'/g')
+DEFINITION=$(echo "$DEFINITION" | sed 's/&#8220;/"/g')      # Open double quotes
+DEFINITION=$(echo "$DEFINITION" | sed 's/&#8221;/"/g')      # Close double quotes
+DEFINITION=$(echo "$DEFINITION" | sed 's/&#8216;/'\''/g')   # Open single quote
+DEFINITION=$(echo "$DEFINITION" | sed 's/&#8217;/'\''/g')   # Close single quote
+DEFINITION=$(echo "$DEFINITION" | sed 's/&#8212;/'—'/g')    # Dash-em
 
 if [ "$fancy" = true ]; then
     # Apply italics formatting using ANSI escape codes to <em> and <i> tags
@@ -63,10 +63,11 @@ DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>//g; s/<\/span>//g')
 
 
 RED='\e[31m'
+BLUE='\e[34m'
 GREEN='\e[32m'
-NC='\e[39m'  # Reset color
+NC='\e[39m'    # Reset color
 
-
-echo -e "Word: ${RED}$WORD${NC}"
-echo -e "Definition:"
-echo -e "${GREEN}$DEFINITION${NC}"
+# Output to the terminal
+echo -e "${RED}Word:${NC} $WORD"
+echo -e "${BLUE}Definition:${NC}"
+echo -e "$DEFINITION"
