@@ -55,7 +55,8 @@ fi
 
 # Remove span tags
 DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>//g; s/<\/span>//g')
-DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')
+DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')  # Removes newlines
+DEFINITION=$(echo "$DEFINITION" | sed 's/  */ /g')  # Removes any doublespaces
 
 RED='\e[31m'
 GREEN='\e[32m'

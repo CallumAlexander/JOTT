@@ -11,12 +11,12 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [ ] Option for `n` number of random definition requests
 - [ ] Punctuation and Grammar inclusion if applicable for the term
 - [x] Handling when the source is down
-- [X] Exclude subdirectories in the random search
+- [x] Exclude subdirectories in the random search
 - [ ] Specify the request timeout - default is 2 seconds currently
 - [x] Fix handling and removal of `<i>` tags
    - I think? I've not done rigorous tests for it
 - [ ] Fix handling and removal of `<span>` tags
-- [ ] Fix the newline problem
+- [x] Fix the newline problem
 - [ ] Ability to click and follow redirects and links
 - [ ] Install script/command that adds it to your MOTD or terminal rc file
 - [ ] Handle bold tags like this command class: `<b class="command">Unable to kill all processes.  Blast them (y/n)?</b>`
