@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source jott.cfg
+
 echo "JOTT"
 echo "Jargon Of The Terminal"
 echo "Courtesy of The on-line hacker Jargon File, version 4.4.7"
@@ -26,44 +28,40 @@ RANDOM_INDEX=$((RANDOM % TOTAL_LINKS))
 RANDOM_LINK="${LINK_ARRAY[RANDOM_INDEX]}"
 FULL_URL="$BASE_URL$RANDOM_LINK"
 
-# echo "$FULL_URL"
 
 LINK_CONTENT=$(curl -s "$FULL_URL")
 
 WORD=$(echo "$LINK_CONTENT" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/')
 
-# pronunciation=$(echo "$LINK_CONTENT" | awk -F '[<>]' '/class="pronunciation"/ {print $3}')
-# grammar=$(echo "$LINK_CONTENT" | awk -F '[<>]' '/class="grammar"/ {print $3}')
 
 DEFINITION=$(echo "$LINK_CONTENT" | awk -v RS='</dd>' -F '<p>|</p>' '{gsub(/<a[^>]*>|<\/a>/, ""); print $2}')
 
+# Apply ANSI escape code replacement for proper unicode characters
 DEFINITION=$(echo "$DEFINITION" | sed 's/&#8220;/"/g')
 DEFINITION=$(echo "$DEFINITION" | sed 's/&#8221;/"/g')
-
 DEFINITION=$(echo "$DEFINITION" | sed 's/&#8216;/'\''/g')
 DEFINITION=$(echo "$DEFINITION" | sed 's/&#8217;/'\''/g')
-
 DEFINITION=$(echo "$DEFINITION" | sed 's/&#8212;/'—'/g')
 
-DEFINITION=$(echo "$DEFINITION" | sed 's/<i class="glossterm">\(.*\)<\/i>/\1/g')
-DEFINITION=$(echo "$DEFINITION" | sed 's/<i class="citetitle">\(.*\)<\/i>/\1/g')
+if [ "$fancy" = true ]; then
+    # Apply italics formatting using ANSI escape codes to <em> and <i> tags
+    DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]+)<\/i>|\o033[3m\2\o033[0m|g')
+    DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]+)<\/em>|\o033[3m\2\o033[0m|g')
+else
+    # Remove the <i> tags, leaving the content
+    DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]*)<\/i>|\2|g')
+    DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]*)<\/em>|\2|g')
+fi
 
-# DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>\(.*\)<\/span>/\1/g')
-# DEFINITION=$(echo "$DEFINITION" | sed 's/<span class="quote">\(.*\)<\/span>/\1/g')
-# DEFINITION=$(echo "$DEFINITION" | sed 's/<span class="emphasis">\(.*\)<\/span>/\1/g')
-# DEFINITION=$(echo "$DEFINITION" | sed 's/<span class="citerefentry">\(.*\)<\/span>/\1/g')
-# DEFINITION=$(echo "$DEFINITION" | sed 's/<span class="firstterm">\(.*\)<\/span>/\1/g')
-# DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>\(.*\)<\/span>/\1/g')
-
-
+# Remove span tags
 DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>//g; s/<\/span>//g')
+DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m' # No color
+RED='\e[31m'
+GREEN='\e[32m'
+NC='\e[39m'  # Reset color
 
-# DEFINITION=$(echo "$LINK_CONTENT" | sed -n '/<dd>/,/<\/dd>/p' | sed 's/<a[^>]*>[^<]*<\/a>//g' | sed 's/<[^>]*>//g' | awk '{$1=$1}' | tr -d '\n' | sed 's/<dd>/\n\n<dd>/g')
 
 echo -e "Word: ${RED}$WORD${NC}"
-echo -e "Definition:${GREEN}"
-echo -e "$DEFINITION${NC}"
+echo -e "Definition:"
+echo -e "${GREEN}$DEFINITION${NC}"

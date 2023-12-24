@@ -13,8 +13,10 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [x] Handling when the source is down
 - [X] Exclude subdirectories in the random search
 - [ ] Specify the request timeout - default is 2 seconds currently
-- [ ] Fix handling and removal of `<i>` tags
+- [x] Fix handling and removal of `<i>` tags
+   - I think? I've not done rigorous tests for it
 - [ ] Fix handling and removal of `<span>` tags
+- [ ] Fix the newline problem
 - [ ] Ability to click and follow redirects and links
 - [ ] Install script/command that adds it to your MOTD or terminal rc file
 - [ ] Handle bold tags like this command class: `<b class="command">Unable to kill all processes.  Blast them (y/n)?</b>`
