@@ -4,8 +4,9 @@ Author : _Callum Alexander_ (TheCatThatBarks)
 
 Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 
-### To-do list of things to to
+### To-do list of things to do
 - [ ] Make file and include `curl` dependency installation
+- [ ] Fix the text formatting/colour interference
 - [ ] Argument to query a specific term
 - [ ] Install instructions on README.md
 - [ ] Option for `n` number of random definition requests
@@ -15,12 +16,14 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [ ] Specify the request timeout - default is 2 seconds currently
 - [x] Fix handling and removal of `<i>` tags
    - I think? I've not done rigorous tests for it
-- [ ] Fix handling and removal of `<span>` tags
+- [x] Fix handling and removal of `<span>` tags
 - [x] Fix the newline problem
+- [ ] String spaces at the start and end of string
 - [ ] Ability to click and follow redirects and links
 - [ ] Install script/command that adds it to your MOTD or terminal rc file
 - [ ] Handle bold tags like this command class: `<b class="command">Unable to kill all processes.  Blast them (y/n)?</b>`
 - [ ] Handle italic tags like this: `<em>which</em>`
 - [ ] Handle italic tags like this: `<i class="citetitle">A Stress Analysis Of A Strapless Evening
    Gown: And Other Essays For A Scientific Eye</i>`
+- [ ] Have the JOTT logo as ASCII art
 

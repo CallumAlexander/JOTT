@@ -33,8 +33,13 @@ LINK_CONTENT=$(curl -s "$FULL_URL")
 
 WORD=$(echo "$LINK_CONTENT" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/')
 
+# ------------------------
+# Processings Definition
 
 DEFINITION=$(echo "$LINK_CONTENT" | awk -v RS='</dd>' -F '<p>|</p>' '{gsub(/<a[^>]*>|<\/a>/, ""); print $2}')
+
+DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')  # Removes newlines
+DEFINITION=$(echo "$DEFINITION" | sed 's/  */ /g')  # Removes any doublespaces
 
 # Apply ANSI escape code replacement for proper unicode characters
 DEFINITION=$(echo "$DEFINITION" | sed 's/&#8220;/"/g')
@@ -55,8 +60,7 @@ fi
 
 # Remove span tags
 DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>//g; s/<\/span>//g')
-DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')  # Removes newlines
-DEFINITION=$(echo "$DEFINITION" | sed 's/  */ /g')  # Removes any doublespaces
+
 
 RED='\e[31m'
 GREEN='\e[32m'
