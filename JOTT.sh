@@ -2,7 +2,16 @@
 
 source jott.cfg
 
-echo "JOTT"
+jott_ascii_art="
+     ____.______________________________
+    |    |\\_____  \\__    ___/\\__    ___/
+    |    | /   |   \\|    |     |    |   
+/\\__|    |/    |    \\    |     |    |   
+\\________|\\_______  /____|     |____|   
+                  \\/                    
+"
+
+echo -e "$jott_ascii_art"
 echo "Jargon Of The Terminal"
 echo -e "Courtesy of The on-line hacker Jargon File, version 4.4.7\n"
 

@@ -25,5 +25,6 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [ ] Handle italic tags like this: `<em>which</em>`
 - [ ] Handle italic tags like this: `<i class="citetitle">A Stress Analysis Of A Strapless Evening
    Gown: And Other Essays For A Scientific Eye</i>`
-- [ ] Have the JOTT logo as ASCII art
+- [x] Have the JOTT logo as ASCII art
+- [ ] Implement limited column width for definition
 
