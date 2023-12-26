@@ -11,9 +11,11 @@ jott_ascii_art="
                   \\/                    
 "
 
-echo -e "$jott_ascii_art"
-echo "Jargon Of The Terminal"
-echo -e "Courtesy of The on-line hacker Jargon File, version 4.4.7\n"
+if [ "$no_header" = false ]; then
+    echo -e "$jott_ascii_art"
+    echo "Jargon Of The Terminal"
+    echo -e "Courtesy of The on-line hacker Jargon File, version 4.4.7\n"
+fi
 
 BASE_URL="http://www.catb.org/jargon/html/"
 URL="http://www.catb.org/jargon/html/go01.html"
