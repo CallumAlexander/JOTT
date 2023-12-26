@@ -29,3 +29,6 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [x] create a timeout in seconds variable in config file
 - [x] Implement limited column width for definition
 
+---
+ASCII Art credits: textkool.com
+
