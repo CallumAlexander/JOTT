@@ -74,6 +74,7 @@ DEFINITION=$(echo "$DEFINITION" | sed 's/&#8212;/'—'/g')    # Dash-em
 
 if [ "$fancy" = true ]; then
     # Apply italics formatting using ANSI escape codes to <em> and <i> tags
+    DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i class="glossterm">([^<]+)</i>|\o033[4m\1\o033[0m|g')
     DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]+)<\/i>|\o033[3m\2\o033[0m|g')
     DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]+)<\/em>|\o033[3m\2\o033[0m|g')
 else

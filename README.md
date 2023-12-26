@@ -30,7 +30,8 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [x] Implement limited column width for definition
 - [x] Implement no-header variable for config file
 - [ ] Implement indented definition
-- [ ] Underline other glossary terms
+- [x] Underline other glossary terms
+- [ ] Handle `tt` tags
 
 ---
 ASCII Art credits: textkool.com
