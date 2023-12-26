@@ -34,7 +34,7 @@ LINK_CONTENT=$(curl -s "$FULL_URL")
 WORD=$(echo "$LINK_CONTENT" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/')
 
 # ------------------------
-# Processings Definition
+# Processing Definition
 
 DEFINITION=$(echo "$LINK_CONTENT" | awk -v RS='</dd>' -F '<p>|</p>' '{gsub(/<a[^>]*>|<\/a>/, ""); print $2}')
 
@@ -60,6 +60,8 @@ fi
 
 # Remove span tags
 DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>//g; s/<\/span>//g')
+# Remove leading and trailing whitespace
+DEFINITION=$(echo "$DEFINITION" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 
 
 RED='\e[31m'

@@ -18,7 +18,7 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
    - I think? I've not done rigorous tests for it
 - [x] Fix handling and removal of `<span>` tags
 - [x] Fix the newline problem
-- [ ] String spaces at the start and end of string
+- [x] strip spaces at the start and end of string
 - [ ] Ability to click and follow redirects and links
 - [ ] Install script/command that adds it to your MOTD or terminal rc file
 - [ ] Handle bold tags like this command class: `<b class="command">Unable to kill all processes.  Blast them (y/n)?</b>`
