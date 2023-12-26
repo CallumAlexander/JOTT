@@ -1,6 +1,19 @@
 #!/bin/bash
 
-source jott.cfg
+# Handle config file lections
+installed_config_file="$HOME/.config/jott/jott.cfg"
+local_config_file="./jott.cfg"  # Current working dir (make install not run yet)
+
+if [ -f "$installed_config_file" ]; then
+    config_file="$installed_config_file"
+elif [ -f "$local_config_file" ]; then
+    config_file="$local_config_file"
+else
+    echo "[-] JOTT Configuration file not found in either ~/.config/jott/ or in the current working directory."
+    exit 1
+fi
+
+source $config_file
 
 jott_ascii_art="
      ____.______________________________

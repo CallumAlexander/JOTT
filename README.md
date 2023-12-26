@@ -5,7 +5,7 @@ Author : _Callum Alexander_ (TheCatThatBarks)
 Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 
 ### To-do list of things to do
-- [ ] Make file and include `curl` dependency installation
+- [x] Make file and include `curl` dependency check 
 - [ ] Fix the text formatting/colour interference
 - [ ] Argument to query a specific term
 - [ ] Install instructions on README.md
@@ -13,7 +13,7 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [ ] Punctuation and Grammar inclusion if applicable for the term
 - [x] Handling when the source is down
 - [x] Exclude subdirectories in the random search
-- [ ] Specify the request timeout - default is 2 seconds currently
+- [x] Specify the request timeout - default is 2 seconds currently
 - [x] Fix handling and removal of `<i>` tags
    - I think? I've not done rigorous tests for it
 - [x] Fix handling and removal of `<span>` tags
@@ -30,6 +30,7 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [x] Implement limited column width for definition
 - [x] Implement no-header variable for config file
 - [ ] Implement indented definition
+- [ ] Underline other glossary terms
 
 ---
 ASCII Art credits: textkool.com
