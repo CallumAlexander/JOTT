@@ -18,7 +18,7 @@ echo -e "Courtesy of The on-line hacker Jargon File, version 4.4.7\n"
 BASE_URL="http://www.catb.org/jargon/html/"
 URL="http://www.catb.org/jargon/html/go01.html"
 
-if LINKS=$(timeout 2s curl -s "$URL"); then
+if LINKS=$(timeout "$request_timeout"s curl -s "$URL"); then
     LINKS=$(echo "$LINKS" | grep -o '<a [^>]*href="[^"]*"[^>]*>' | sed 's/<a [^>]*href="\([^"]*\)"[^>]*>/\1/g' | grep -E '[A-Z0-9]/[^/]+\.html')
 else
     echo "Error: Unable to fetch content from $URL due to a timeout or possible connection problems"
