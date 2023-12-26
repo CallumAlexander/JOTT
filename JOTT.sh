@@ -73,6 +73,12 @@ DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>//g; s/<\/span>//g')
 DEFINITION=$(echo "$DEFINITION" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 
 
+# Manage definition output width
+if [ "$limit_definition_width" = true ]; then
+    DEFINITION=$(echo "$DEFINITION" | fold -w "$definition_width" -s)
+fi 
+
+
 RED='\e[31m'
 BLUE='\e[34m'
 GREEN='\e[32m'

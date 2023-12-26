@@ -27,5 +27,5 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
    Gown: And Other Essays For A Scientific Eye</i>`
 - [x] Have the JOTT logo as ASCII art
 - [x] create a timeout in seconds variable in config file
-- [ ] Implement limited column width for definition
+- [x] Implement limited column width for definition
 
