@@ -31,6 +31,7 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [x] Implement no-header variable for config file
 - [ ] Implement indented definition
 - [x] Underline other glossary terms
+- [ ] Figure out why `make uninstall` doesn't install the script
 - [ ] Handle `tt` tags
 
 ---

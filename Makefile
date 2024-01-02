@@ -1,7 +1,7 @@
 # Makefile to install JOTT and its config file
 
 # DIRS
-SCRIPT_DIR := $(HOME)/.local/bin/
+SCRIPT_DIR := $(HOME)/.local/bin
 CONFIG_DIR := $(HOME)/.config/jott
 
 # VARS
@@ -38,7 +38,9 @@ install:
 
 uninstall:
 	@rm -f $(SCRIPT_DIR)/$(SCRIPT)
+	@echo -e "[+] Uninstalled "$(SCRIPT_DIR)"/"$(SCRIPT)""
 	@rm -f $(CONFIG_DIR)/$(CONFIG)
+	@echo -e "[+] Uninstalled "$(CONFIG_DIR)"/"$(CONFIG)""
 	@echo "[+] Uninstalled all JOTT files."
 
 .PHONY: all check_dependencies install uninstall

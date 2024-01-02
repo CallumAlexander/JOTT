@@ -94,7 +94,6 @@ if [ "$limit_definition_width" = true ]; then
     DEFINITION=$(echo "$DEFINITION" | fold -w "$definition_width" -s)
 fi 
 
-
 RED='\e[31m'
 BLUE='\e[34m'
 GREEN='\e[32m'
