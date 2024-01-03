@@ -4,11 +4,43 @@ Author : _Callum Alexander_ (TheCatThatBarks)
 
 Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 
+## Installation
+
+To install JOTT, follow these simple steps:
+
+1. **Clone the Repository:**
+
+   Open your terminal and navigate to the directory where you want to install JOTT. Then, use the following command to clone the repository:
+
+   ```bash
+   git clone https://github.com/CallumAlexander/JOTT.git
+   ```
+
+2. **Navigate to the Repository Directory:**
+
+   Change your current directory to the newly cloned repository:
+
+   ```bash
+   cd JOTT
+   ```
+
+3. **Run the Makefile:**
+
+   To build and install JOTT, you just need to run the included Makefile. Use the following command:
+
+   ```bash
+   make
+   ```
+
+   This command will copy the program and its config file to the relevant directories, and sure that the program is in PATH.
+
+
+
 ### To-do list of things to do
 - [x] Make file and include `curl` dependency check 
 - [ ] Fix the text formatting/colour interference
 - [ ] Argument to query a specific term
-- [ ] Install instructions on README.md
+- [x] Install instructions on README.md
 - [ ] Option for `n` number of random definition requests
 - [ ] Punctuation and Grammar inclusion if applicable for the term
 - [x] Handling when the source is down
@@ -31,7 +63,7 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 - [x] Implement no-header variable for config file
 - [ ] Implement indented definition
 - [x] Underline other glossary terms
-- [ ] Figure out why `make uninstall` doesn't install the script
+- [x] Figure out why `make uninstall` doesn't install the script
 - [ ] Handle `tt` tags
 
 ---
