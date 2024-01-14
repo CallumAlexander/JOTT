@@ -1,19 +1,44 @@
 #!/bin/bash
 
 # Handle config file lections
-installed_config_file="$HOME/.config/jott/jott.cfg"
-local_config_file="./jott.cfg"  # Current working dir (make install not run yet)
+jott_installed_config_file="$HOME/.config/jott/jott.cfg"
+jott_local_config_file="./jott.cfg"  # Current working dir (make install not run yet)
 
-if [ -f "$installed_config_file" ]; then
-    config_file="$installed_config_file"
-elif [ -f "$local_config_file" ]; then
-    config_file="$local_config_file"
+if [ -f "$jott_installed_config_file" ]; then
+    jott_config_file="$jott_installed_config_file"
+elif [ -f "$jott_local_config_file" ]; then
+    jott_config_file="$jott_local_config_file"
 else
     echo "[-] JOTT Configuration file not found in either ~/.config/jott/ or in the current working directory."
     exit 1
 fi
 
-source $config_file
+validate_cofig() {
+    for var in fancy no_header limit_definition_width; do
+        value=$(eval echo \$$var)
+        if [ "$value" != "true" ] && [ "$value" != "false" ]; then
+            echo "Error: Invalid value for '$var'. Expected 'true' or 'false',"
+            exit 1
+        fi
+    done
+
+    for var in request_timeout definition_width; do
+        value=$(eval echo \$$var)
+        if ! [[ "$value" =~ ^[0-9]+$ ]]; then
+            if [ "$var" == "request_timeout" ]; then
+                eval $var=2
+            elif [ "$var" == "definition_width" ]; then
+                eval $var=80
+            else
+                echo "Error: Invalid value for '$var'. Expected a positive integer."
+                exit 1
+            fi
+        fi
+    done
+}
+
+source $jott_config_file
+validate_cofig
 
 jott_ascii_art="
      ____.______________________________
