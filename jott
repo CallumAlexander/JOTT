@@ -14,23 +14,23 @@ else
 fi
 
 validate_cofig() {
-    for var in fancy no_header limit_definition_width; do
-        value=$(eval echo \$$var)
-        if [ "$value" != "true" ] && [ "$value" != "false" ]; then
-            echo "Error: Invalid value for '$var'. Expected 'true' or 'false',"
+    for validate_var in fancy no_header limit_definition_width; do
+        actual_value=$(eval echo \$$validate_var)
+        if [ "$actual_value" != "true" ] && [ "$actual_value" != "false" ]; then
+            echo "Error: Invalid value for '$validate_var'. Expected 'true' or 'false',"
             exit 1
         fi
     done
 
-    for var in request_timeout definition_width; do
-        value=$(eval echo \$$var)
-        if ! [[ "$value" =~ ^[0-9]+$ ]]; then
-            if [ "$var" == "request_timeout" ]; then
-                eval $var=2
-            elif [ "$var" == "definition_width" ]; then
-                eval $var=80
+    for validate_var in request_timeout definition_width; do
+        actual_value=$(eval echo \$$validate_var)
+        if ! [[ "$actual_value" =~ ^[0-9]+$ ]]; then
+            if [ "$validate_var" == "request_timeout" ]; then
+                eval $validate_var=2
+            elif [ "$validate_var" == "definition_width" ]; then
+                eval $validate_var=80
             else
-                echo "Error: Invalid value for '$var'. Expected a positive integer."
+                echo "Error: Invalid value for '$validate_var'. Expected a positive integer."
                 exit 1
             fi
         fi
