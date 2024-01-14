@@ -128,3 +128,6 @@ NC='\e[39m'    # Reset color
 echo -e "${RED}Word:${NC} $WORD"
 echo -e "${BLUE}Definition:${NC}"
 echo -e "$DEFINITION"
+
+# Unsetting variables that could cause conflicts with other programs
+unset URL BASE_URL LINKS WORD
