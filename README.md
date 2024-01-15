@@ -4,6 +4,10 @@ Author : _Callum Alexander_ (TheCatThatBarks)
 
 Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 
+## What is JOTT?
+
+Jargon of the Terminal (JOTT) is a command-line program that displays random glossary terms and their corresponding definitions sourced from [The Jargon File](http://www.catb.org/jargon/html/online-preface.html).
+
 ## Installation
 
 To install JOTT, follow these simple steps:
@@ -34,6 +38,17 @@ To install JOTT, follow these simple steps:
 
    This command will copy the program and its config file to the relevant directories, and sure that the program is in PATH.
 
+## Usage
+
+   To use the program, simply run:
+
+   ```bash
+   jott
+   ```
+   
+   in any terminal emulator.
+
+   - Program settings can be changed in the accompanying `jott.cfg` file located in `~/.config/jott` after the Makefile installation process.
 
 
 ### To-do list of things to do
