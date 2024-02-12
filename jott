@@ -45,6 +45,34 @@ fetch_specific_link_content() {
 
 }
 
+fetch_random_link_content() {
+    local base_url="http://www.catb.org/jargon/html/"
+    local specific_url="http://www.catb.org/jargon/html/go01.html"
+
+    if links=$(timeout "${request_timeout}s" curl -s "$specific_url"); then
+        links=$(echo "$links" | grep -o '<a [^>]*href="[^"]*"[^>]*>' | sed 's/<a [^>]*href="\([^"]*\)"[^>]*>/\1/g' | grep -E '[A-Z0-9]/[^/]+\.html')
+    else
+        echo "Error: Unable to fetch content from $specific_url due to a timeout or possible connection problems"
+        return 1
+    fi
+
+    if [ -z "$links" ]; then
+        echo "No links found on the webpage."
+        return 1
+    fi
+
+    IFS=$'\n' read -rd '' -a link_array <<< "$links"
+
+    total_links="${#link_array[@]}"
+    random_index=$((RANDOM % total_links))
+    random_link="${link_array[random_index]}"
+    full_url="$base_url$random_link"
+
+    link_content=$(curl -s "$full_url")
+    echo -e "$link_content"
+
+}
+
 handle_definition () {
     local LINK_CONTENT="$1"
     DEFINITION=$(echo "$LINK_CONTENT" | awk -v RS='</dd>' -F '<p>|</p>' '{gsub(/<a[^>]*>|<\/a>/, ""); print $2}')
@@ -85,20 +113,6 @@ handle_definition () {
 
 }
 
-# Search for methods
-if [ "$1" = "-q" ] && [ -n "$2" ]; then
-    link_content=$(fetch_specific_link_content "$2")
-    WORD=$(echo "$link_content" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/')
-    echo -e "$WORD"
-    if [ -z "$WORD" ]; then
-        echo -e "[-] ERROR: Unable to fetch content for word $2. The term probably doesn't exist (yet) in The Jargon File." >&2
-        exit 1
-    fi
-    DEFINITION=$(handle_definition "$link_content")
-    output_to_terminal "$WORD" "$DEFINITION"
-    exit 0
-fi
-
 validate_config() {
     for validate_var in fancy no_header limit_definition_width; do
         actual_value=$(eval echo \$$validate_var)
@@ -123,6 +137,7 @@ validate_config() {
     done
 }
 
+
 source $jott_config_file
 validate_config
 
@@ -141,42 +156,23 @@ if [ "$no_header" = false ]; then
     echo -e "Courtesy of The on-line hacker Jargon File, version 4.4.7\n"
 fi
 
-fetch_random_link_content() {
-    local base_url="http://www.catb.org/jargon/html/"
-    local specific_url="http://www.catb.org/jargon/html/go01.html"
-
-    if links=$(timeout "${request_timeout}s" curl -s "$specific_url"); then
-        links=$(echo "$links" | grep -o '<a [^>]*href="[^"]*"[^>]*>' | sed 's/<a [^>]*href="\([^"]*\)"[^>]*>/\1/g' | grep -E '[A-Z0-9]/[^/]+\.html')
-    else
-        echo "Error: Unable to fetch content from $specific_url due to a timeout or possible connection problems"
-        return 1
+# Search for methods
+if [ "$1" = "-q" ] && [ -n "$2" ]; then
+    link_content=$(fetch_specific_link_content "$2")
+    WORD=$(echo "$link_content" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/')
+    echo -e "$WORD"
+    if [ -z "$WORD" ]; then
+        echo -e "[-] ERROR: Unable to fetch content for word $2. The term probably doesn't exist (yet) in The Jargon File." >&2
+        exit 1
     fi
+    DEFINITION=$(handle_definition "$link_content")
+    output_to_terminal "$WORD" "$DEFINITION"
+    exit 0
+fi
 
-    if [ -z "$links" ]; then
-        echo "No links found on the webpage."
-        return 1
-    fi
-
-    IFS=$'\n' read -rd '' -a link_array <<< "$links"
-
-    total_links="${#link_array[@]}"
-    random_index=$((RANDOM % total_links))
-    random_link="${link_array[random_index]}"
-    full_url="$base_url$random_link"
-
-    link_content=$(curl -s "$full_url")
-    echo -e "$link_content"
-
-}
-
+# Else no arguments, follow regular random definition output
 LINK_CONTENT=$(fetch_random_link_content)
 WORD=$(echo "$LINK_CONTENT" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/')
-
-# ------------------------
-# Processing Definition
-
-
-
 DEFINITION=$(handle_definition "$LINK_CONTENT")
 output_to_terminal "$WORD" "$DEFINITION"
 

@@ -54,7 +54,9 @@ To install JOTT, follow these simple steps:
 ### To-do list of things to do
 - [x] Make file and include `curl` dependency check 
 - [ ] Fix the text formatting/colour interference
-- [ ] Argument to query a specific term
+- [x] Argument to query a specific term
+  - [ ] Query terms with multiple words, currently only able to query one word terms
+  - [ ] remove case sensitivity from query terms
 - [x] Install instructions on README.md
 - [ ] Option for `n` number of random definition requests
 - [ ] Punctuation and Grammar inclusion if applicable for the term
