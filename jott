@@ -31,13 +31,13 @@ fetch_specific_link_content() {
     local word="$1"
     local base_url="http://www.catb.org/jargon/html/"
 
-    local formatted_word=$(echo "$word" | tr '[:upper:]' '[:lower:]') # Convert word to lowercase
+    local formatted_word=$(echo "$word" | sed 's/ /-/g')  # Replacing spaces with a dash
     local character_dir=$(echo "$word" | tr '[:lower:]' '[:upper:]')
     local specific_url="${base_url}${character_dir:0:1}/${formatted_word}.html" # Construct URL
-
     local link_content=$(curl -s "$specific_url")
+    
     if [ -z "$link_content" ]; then
-        echo "Error: Unable to fetch content for word $word from $specific_url" >&2
+        echo "Error: Unable to fetch content for word $word from $specific_url . The term may not exist!" >&2
         return 1
     fi
 
@@ -45,13 +45,57 @@ fetch_specific_link_content() {
 
 }
 
+handle_definition () {
+    local LINK_CONTENT="$1"
+    DEFINITION=$(echo "$LINK_CONTENT" | awk -v RS='</dd>' -F '<p>|</p>' '{gsub(/<a[^>]*>|<\/a>/, ""); print $2}')
 
+    DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')  # Removes newlines
+    DEFINITION=$(echo "$DEFINITION" | sed 's/  */ /g')  # Removes any doublespaces
+
+    # Apply ANSI escape code replacement for proper unicode characters
+    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8220;/"/g')      # Open double quotes
+    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8221;/"/g')      # Close double quotes
+    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8216;/'\''/g')   # Open single quote
+    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8217;/'\''/g')   # Close single quote
+    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8212;/'—'/g')    # Dash-em
+
+    if [ "$fancy" = true ]; then
+        # Apply italics formatting using ANSI escape codes to <em> and <i> tags
+        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i class="glossterm">([^<]+)</i>|\o033[4m\1\o033[0m|g')
+        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]+)<\/i>|\o033[3m\2\o033[0m|g')
+        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]+)<\/em>|\o033[3m\2\o033[0m|g')
+    else
+        # Remove the <i> tags, leaving the content
+        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]*)<\/i>|\2|g')
+        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]*)<\/em>|\2|g')
+    fi
+
+    # Remove span tags
+    DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>//g; s/<\/span>//g')
+    # Remove leading and trailing whitespace
+    DEFINITION=$(echo "$DEFINITION" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+
+
+    # Manage definition output width
+    if [ "$limit_definition_width" = true ]; then
+        DEFINITION=$(echo "$DEFINITION" | fold -w "$definition_width" -s)
+    fi 
+
+    echo -e "$DEFINITION"
+
+}
+
+# Search for methods
 if [ "$1" = "-q" ] && [ -n "$2" ]; then
-    echo "Performing a quick search for: $2"
-    # output_to_terminal
     link_content=$(fetch_specific_link_content "$2")
     WORD=$(echo "$link_content" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/')
-    echo "$WORD"
+    echo -e "$WORD"
+    if [ -z "$WORD" ]; then
+        echo -e "[-] ERROR: Unable to fetch content for word $2. The term probably doesn't exist (yet) in The Jargon File." >&2
+        exit 1
+    fi
+    DEFINITION=$(handle_definition "$link_content")
+    output_to_terminal "$WORD" "$DEFINITION"
     exit 0
 fi
 
@@ -130,45 +174,7 @@ WORD=$(echo "$LINK_CONTENT" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/
 
 # ------------------------
 # Processing Definition
-handle_definition () {
-    local LINK_CONTENT="$1"
-    DEFINITION=$(echo "$LINK_CONTENT" | awk -v RS='</dd>' -F '<p>|</p>' '{gsub(/<a[^>]*>|<\/a>/, ""); print $2}')
 
-    DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')  # Removes newlines
-    DEFINITION=$(echo "$DEFINITION" | sed 's/  */ /g')  # Removes any doublespaces
-
-    # Apply ANSI escape code replacement for proper unicode characters
-    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8220;/"/g')      # Open double quotes
-    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8221;/"/g')      # Close double quotes
-    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8216;/'\''/g')   # Open single quote
-    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8217;/'\''/g')   # Close single quote
-    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8212;/'—'/g')    # Dash-em
-
-    if [ "$fancy" = true ]; then
-        # Apply italics formatting using ANSI escape codes to <em> and <i> tags
-        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i class="glossterm">([^<]+)</i>|\o033[4m\1\o033[0m|g')
-        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]+)<\/i>|\o033[3m\2\o033[0m|g')
-        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]+)<\/em>|\o033[3m\2\o033[0m|g')
-    else
-        # Remove the <i> tags, leaving the content
-        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]*)<\/i>|\2|g')
-        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]*)<\/em>|\2|g')
-    fi
-
-    # Remove span tags
-    DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>//g; s/<\/span>//g')
-    # Remove leading and trailing whitespace
-    DEFINITION=$(echo "$DEFINITION" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-
-
-    # Manage definition output width
-    if [ "$limit_definition_width" = true ]; then
-        DEFINITION=$(echo "$DEFINITION" | fold -w "$definition_width" -s)
-    fi 
-
-    echo -e "$DEFINITION"
-
-}
 
 
 DEFINITION=$(handle_definition "$LINK_CONTENT")
