@@ -59,7 +59,7 @@ To query a specific term for The Jargon File glossary, simply run:
 ```bash
 jott -q "<term>"
 ```
-in any terminal emulator, where `<term>` is the specific term that you want to query for. The term must be enclosed within double quotes (""). **Query terms are currently case sensitive.**
+in any terminal emulator, where `<term>` is the specific term that you want to query for. The term must be enclosed within double quotes (""). **Query terms are currently case sensitive and have to be exact.**
 
 #### Examples of querying a specific term
 
@@ -70,7 +70,7 @@ jott -q "bit-paired keyboard"
 ```
 
 
-### To-do list of things to do
+# To-do list of things to do
 - [x] Make file and include `curl` dependency check 
 - [ ] Fix the text formatting/colour interference
 - [x] Argument to query a specific term
