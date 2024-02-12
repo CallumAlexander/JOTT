@@ -32,6 +32,7 @@ fetch_specific_link_content() {
     local base_url="http://www.catb.org/jargon/html/"
 
     local formatted_word=$(echo "$word" | sed 's/ /-/g')  # Replacing spaces with a dash
+    formatted_word=$(echo "$formatted_word" | sed 's/\//-/g')
     local character_dir=$(echo "$word" | tr '[:lower:]' '[:upper:]')
     local specific_url="${base_url}${character_dir:0:1}/${formatted_word}.html" # Construct URL
     local link_content=$(curl -s "$specific_url")

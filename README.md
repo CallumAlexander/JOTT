@@ -40,23 +40,49 @@ To install JOTT, follow these simple steps:
 
 ## Usage
 
+### Basic usage 
+
    To use the program, simply run:
 
    ```bash
    jott
    ```
    
-   in any terminal emulator.
+   in any terminal emulator. This will return a random glossary term and definition straight to STDOUT.
 
    - Program settings can be changed in the accompanying `jott.cfg` file located in `~/.config/jott` after the Makefile installation process.
+
+### Querying a specific term (*beta*)
+
+To query a specific term for The Jargon File glossary, simply run:
+
+```bash
+jott -q "<term>"
+```
+in any terminal emulator, where `<term>` is the specific term that you want to query for. The term must be enclosed within double quotes (""). **Query terms are currently case sensitive.**
+
+#### Examples of querying a specific term
+
+```bash
+jott -q "hack"
+jott -q "ANSI standard pizza"
+jott -q "bit-paired keyboard"
+```
 
 
 ### To-do list of things to do
 - [x] Make file and include `curl` dependency check 
 - [ ] Fix the text formatting/colour interference
 - [x] Argument to query a specific term
-  - [ ] Query terms with multiple words, currently only able to query one word terms
+  - [x] Query terms with multiple words, currently only able to query one word terms
   - [ ] remove case sensitivity from query terms
+  - [ ] Handle ! in terms
+  - [x] Handle / in terms
+  - [ ] Handle . in terms
+  - [ ] Handle & in terms
+  - [ ] Handle + in terms
+  - [ ] Handle $ in terms
+  - [ ] Handle ' in terms
 - [x] Install instructions on README.md
 - [ ] Option for `n` number of random definition requests
 - [ ] Punctuation and Grammar inclusion if applicable for the term
