@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 # Handle config file lections
 jott_installed_config_file="$HOME/.config/jott/jott.cfg"
 jott_local_config_file="./jott.cfg"  # Current working dir (make install not run yet)
@@ -13,7 +15,47 @@ else
     exit 1
 fi
 
-validate_cofig() {
+output_to_terminal() {
+    local WORD="$1"
+    local DEFINITION="$2"
+    local RED='\e[31m'
+    local BLUE='\e[34m'
+    local NC='\e[39m'    # Reset color
+
+    echo -e "${RED}Word:${NC} $WORD"
+    echo -e "${BLUE}Definition:${NC}"
+    echo -e "$DEFINITION"
+}
+
+fetch_specific_link_content() {
+    local word="$1"
+    local base_url="http://www.catb.org/jargon/html/"
+
+    local formatted_word=$(echo "$word" | tr '[:upper:]' '[:lower:]') # Convert word to lowercase
+    local character_dir=$(echo "$word" | tr '[:lower:]' '[:upper:]')
+    local specific_url="${base_url}${character_dir:0:1}/${formatted_word}.html" # Construct URL
+
+    local link_content=$(curl -s "$specific_url")
+    if [ -z "$link_content" ]; then
+        echo "Error: Unable to fetch content for word $word from $specific_url" >&2
+        return 1
+    fi
+
+    echo "$link_content"
+
+}
+
+
+if [ "$1" = "-q" ] && [ -n "$2" ]; then
+    echo "Performing a quick search for: $2"
+    # output_to_terminal
+    link_content=$(fetch_specific_link_content "$2")
+    WORD=$(echo "$link_content" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/')
+    echo "$WORD"
+    exit 0
+fi
+
+validate_config() {
     for validate_var in fancy no_header limit_definition_width; do
         actual_value=$(eval echo \$$validate_var)
         if [ "$actual_value" != "true" ] && [ "$actual_value" != "false" ]; then
@@ -38,7 +80,7 @@ validate_cofig() {
 }
 
 source $jott_config_file
-validate_cofig
+validate_config
 
 jott_ascii_art="
      ____.______________________________
@@ -55,79 +97,82 @@ if [ "$no_header" = false ]; then
     echo -e "Courtesy of The on-line hacker Jargon File, version 4.4.7\n"
 fi
 
-BASE_URL="http://www.catb.org/jargon/html/"
-URL="http://www.catb.org/jargon/html/go01.html"
+fetch_random_link_content() {
+    local base_url="http://www.catb.org/jargon/html/"
+    local specific_url="http://www.catb.org/jargon/html/go01.html"
 
-if LINKS=$(timeout "$request_timeout"s curl -s "$URL"); then
-    LINKS=$(echo "$LINKS" | grep -o '<a [^>]*href="[^"]*"[^>]*>' | sed 's/<a [^>]*href="\([^"]*\)"[^>]*>/\1/g' | grep -E '[A-Z0-9]/[^/]+\.html')
-else
-    echo "Error: Unable to fetch content from $URL due to a timeout or possible connection problems"
-    exit 1
-fi
+    if links=$(timeout "${request_timeout}s" curl -s "$specific_url"); then
+        links=$(echo "$links" | grep -o '<a [^>]*href="[^"]*"[^>]*>' | sed 's/<a [^>]*href="\([^"]*\)"[^>]*>/\1/g' | grep -E '[A-Z0-9]/[^/]+\.html')
+    else
+        echo "Error: Unable to fetch content from $specific_url due to a timeout or possible connection problems"
+        return 1
+    fi
 
-if [ -z "$LINKS" ]; then
-    echo "No links found on the webpage."
-    exit 1
-fi
+    if [ -z "$links" ]; then
+        echo "No links found on the webpage."
+        return 1
+    fi
 
-IFS=$'\n' read -rd '' -a LINK_ARRAY <<< "$LINKS"
+    IFS=$'\n' read -rd '' -a link_array <<< "$links"
 
-TOTAL_LINKS="${#LINK_ARRAY[@]}"
-RANDOM_INDEX=$((RANDOM % TOTAL_LINKS))
-RANDOM_LINK="${LINK_ARRAY[RANDOM_INDEX]}"
-FULL_URL="$BASE_URL$RANDOM_LINK"
+    total_links="${#link_array[@]}"
+    random_index=$((RANDOM % total_links))
+    random_link="${link_array[random_index]}"
+    full_url="$base_url$random_link"
 
+    link_content=$(curl -s "$full_url")
+    echo -e "$link_content"
 
-LINK_CONTENT=$(curl -s "$FULL_URL")
+}
 
+LINK_CONTENT=$(fetch_random_link_content)
 WORD=$(echo "$LINK_CONTENT" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/')
 
 # ------------------------
 # Processing Definition
+handle_definition () {
+    local LINK_CONTENT="$1"
+    DEFINITION=$(echo "$LINK_CONTENT" | awk -v RS='</dd>' -F '<p>|</p>' '{gsub(/<a[^>]*>|<\/a>/, ""); print $2}')
 
-DEFINITION=$(echo "$LINK_CONTENT" | awk -v RS='</dd>' -F '<p>|</p>' '{gsub(/<a[^>]*>|<\/a>/, ""); print $2}')
+    DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')  # Removes newlines
+    DEFINITION=$(echo "$DEFINITION" | sed 's/  */ /g')  # Removes any doublespaces
 
-DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')  # Removes newlines
-DEFINITION=$(echo "$DEFINITION" | sed 's/  */ /g')  # Removes any doublespaces
+    # Apply ANSI escape code replacement for proper unicode characters
+    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8220;/"/g')      # Open double quotes
+    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8221;/"/g')      # Close double quotes
+    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8216;/'\''/g')   # Open single quote
+    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8217;/'\''/g')   # Close single quote
+    DEFINITION=$(echo "$DEFINITION" | sed 's/&#8212;/'—'/g')    # Dash-em
 
-# Apply ANSI escape code replacement for proper unicode characters
-DEFINITION=$(echo "$DEFINITION" | sed 's/&#8220;/"/g')      # Open double quotes
-DEFINITION=$(echo "$DEFINITION" | sed 's/&#8221;/"/g')      # Close double quotes
-DEFINITION=$(echo "$DEFINITION" | sed 's/&#8216;/'\''/g')   # Open single quote
-DEFINITION=$(echo "$DEFINITION" | sed 's/&#8217;/'\''/g')   # Close single quote
-DEFINITION=$(echo "$DEFINITION" | sed 's/&#8212;/'—'/g')    # Dash-em
+    if [ "$fancy" = true ]; then
+        # Apply italics formatting using ANSI escape codes to <em> and <i> tags
+        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i class="glossterm">([^<]+)</i>|\o033[4m\1\o033[0m|g')
+        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]+)<\/i>|\o033[3m\2\o033[0m|g')
+        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]+)<\/em>|\o033[3m\2\o033[0m|g')
+    else
+        # Remove the <i> tags, leaving the content
+        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]*)<\/i>|\2|g')
+        DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]*)<\/em>|\2|g')
+    fi
 
-if [ "$fancy" = true ]; then
-    # Apply italics formatting using ANSI escape codes to <em> and <i> tags
-    DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i class="glossterm">([^<]+)</i>|\o033[4m\1\o033[0m|g')
-    DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]+)<\/i>|\o033[3m\2\o033[0m|g')
-    DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]+)<\/em>|\o033[3m\2\o033[0m|g')
-else
-    # Remove the <i> tags, leaving the content
-    DEFINITION=$(echo "$DEFINITION" | sed -E 's|<i([^>]*)>([^<]*)<\/i>|\2|g')
-    DEFINITION=$(echo "$DEFINITION" | sed -E 's|<em([^>]*)>([^<]*)<\/em>|\2|g')
-fi
-
-# Remove span tags
-DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>//g; s/<\/span>//g')
-# Remove leading and trailing whitespace
-DEFINITION=$(echo "$DEFINITION" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+    # Remove span tags
+    DEFINITION=$(echo "$DEFINITION" | sed 's/<span[^>]*>//g; s/<\/span>//g')
+    # Remove leading and trailing whitespace
+    DEFINITION=$(echo "$DEFINITION" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
 
 
-# Manage definition output width
-if [ "$limit_definition_width" = true ]; then
-    DEFINITION=$(echo "$DEFINITION" | fold -w "$definition_width" -s)
-fi 
+    # Manage definition output width
+    if [ "$limit_definition_width" = true ]; then
+        DEFINITION=$(echo "$DEFINITION" | fold -w "$definition_width" -s)
+    fi 
 
-RED='\e[31m'
-BLUE='\e[34m'
-GREEN='\e[32m'
-NC='\e[39m'    # Reset color
+    echo -e "$DEFINITION"
 
-# Output to the terminal
-echo -e "${RED}Word:${NC} $WORD"
-echo -e "${BLUE}Definition:${NC}"
-echo -e "$DEFINITION"
+}
+
+
+DEFINITION=$(handle_definition "$LINK_CONTENT")
+output_to_terminal "$WORD" "$DEFINITION"
 
 # Unsetting variables that could cause conflicts with other programs
 unset URL BASE_URL LINKS WORD
