@@ -2,7 +2,7 @@
 
 
 
-# Handle config file lections
+# Handle config file locations
 jott_installed_config_file="$HOME/.config/jott/jott.cfg"
 jott_local_config_file="./jott.cfg"  # Current working dir (make install not run yet)
 
@@ -25,6 +25,12 @@ output_to_terminal() {
     echo -e "${RED}Word:${NC} $WORD"
     echo -e "${BLUE}Definition:${NC}"
     echo -e "$DEFINITION"
+}
+
+get_formatted_query_term() {
+    local formatted_word="$1"
+    formatted_word=$(echo "$formatted_word" | sed 's/ /-/g')  # Replacing spaces with a dash
+    formatted_word=$(echo "$formatted_word" | sed 's/!/-/g')  # Replacing exclamation marks with a dash
 }
 
 fetch_specific_link_content() {
@@ -50,7 +56,7 @@ fetch_random_link_content() {
     local base_url="http://www.catb.org/jargon/html/"
     local specific_url="http://www.catb.org/jargon/html/go01.html"
 
-    if links=$(timeout "${request_timeout}s" curl -s "$specific_url"); then
+    if links=$(timeout "${request_timeout}" curl -s "$specific_url"); then
         links=$(echo "$links" | grep -o '<a [^>]*href="[^"]*"[^>]*>' | sed 's/<a [^>]*href="\([^"]*\)"[^>]*>/\1/g' | grep -E '[A-Z0-9]/[^/]+\.html')
     else
         echo "Error: Unable to fetch content from $specific_url due to a timeout or possible connection problems"

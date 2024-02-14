@@ -6,7 +6,11 @@ Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
 
 ## What is JOTT?
 
-Jargon of the Terminal (JOTT) is a command-line program that displays random glossary terms and their corresponding definitions sourced from [The Jargon File](http://www.catb.org/jargon/html/online-preface.html).
+Jargon of the Terminal (JOTT) is a command-line program that displays random glossary terms and their corresponding definitions sourced from [The Jargon File](http://www.catb.org/jargon/html/online-preface.html), amongst other interfaced features.
+
+## What is The Jargon File?
+
+As taken from the source, The Jargon File is "_a comprehensive compendium of hacker slang illuminating many aspects of hackish tradition, folklore, and humor._"
 
 ## Installation
 
@@ -83,6 +87,7 @@ jott -q "bit-paired keyboard"
   - [ ] Handle + in terms
   - [ ] Handle $ in terms
   - [ ] Handle ' in terms
+  - [ ] Querying bot returns barfulation
 - [x] Install instructions on README.md
 - [ ] Option for `n` number of random definition requests
 - [ ] Punctuation and Grammar inclusion if applicable for the term
