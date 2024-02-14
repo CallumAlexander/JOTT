@@ -31,6 +31,9 @@ get_formatted_query_term() {
     local formatted_word="$1"
     formatted_word=$(echo "$formatted_word" | sed 's/ /-/g')  # Replacing spaces with a dash
     formatted_word=$(echo "$formatted_word" | sed 's/!/-/g')  # Replacing exclamation marks with a dash
+    formatted_word=$(echo "$formatted_word" | sed 's/&/-ampersand-/g')  # Replacing ampersand
+
+    echo -e "$formatted_word"
 }
 
 fetch_specific_link_content() {

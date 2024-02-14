@@ -80,10 +80,10 @@ jott -q "bit-paired keyboard"
 - [x] Argument to query a specific term
   - [x] Query terms with multiple words, currently only able to query one word terms
   - [ ] remove case sensitivity from query terms
-  - [ ] Handle ! in terms
+  - [x] Handle ! in terms
   - [x] Handle / in terms
   - [ ] Handle . in terms
-  - [ ] Handle & in terms
+  - [x] Handle & in terms
   - [ ] Handle + in terms
   - [ ] Handle $ in terms
   - [ ] Handle ' in terms
