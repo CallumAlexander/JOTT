@@ -72,7 +72,29 @@ jott -q "hack"
 jott -q "ANSI standard pizza"
 jott -q "bit-paired keyboard"
 ```
+## Reporting Issues
 
+If you encounter any issues while using this project, please don't hesitate to report them. Your feedback is valuable and contributes to the improvement of this project.
+
+Before reporting an issue, please ensure that:
+
+- You have searched existing issues to see if the problem has already been reported.
+- You are using the latest version of the project.
+- You have checked the documentation and other resources to ensure the issue is not related to improper usage.
+
+### How to Report an Issue
+
+1. **Check Existing Issues**: Before submitting a new issue, please search existing issues to see if the problem has already been reported. If you find an open issue that addresses your concern, feel free to add any additional information or context that might be helpful.
+
+2. **Create a New Issue**: If you couldn't find an existing issue that matches your problem, please create a new issue. When creating a new issue, provide as much detail as possible, including:
+    - A clear and descriptive title.
+    - Steps to reproduce the issue.
+    - Expected behavior and actual behavior.
+    - Any error messages or screenshots if applicable.
+    - Details about your environment such as operating system, browser, or any relevant software versions.
+    - Any additional context or information that might be helpful in diagnosing the problem.
+
+3. **Be Responsive**: After submitting an issue, be responsive to any follow-up questions or requests for clarification. This helps in resolving the issue efficiently.
 
 # To-do list of things to do
 - [x] Make file and include `curl` dependency check 
