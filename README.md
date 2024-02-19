@@ -142,6 +142,10 @@ Before reporting an issue, please ensure that:
 - [x] Figure out why `make uninstall` doesn't install the script
 - [ ] Handle `tt` tags
 
+## Disclaimer
+
+Project contributers are not responsible in anyway for unintended modification or deletion of user data. Users are expected to inspect any accompanying MAKE files before installing or uninstalling the program. Good data management, including keeping regular back ups, prevents data loss.
+
 ---
 ASCII Art credits: textkool.com
 
