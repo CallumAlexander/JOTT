@@ -34,6 +34,8 @@ get_formatted_query_term() {
     formatted_word=$(echo "$formatted_word" | sed 's/\//-/g')           # Replacing slashes with a dash
     formatted_word=$(echo "$formatted_word" | sed 's/ /-/g')            # Replacing spaces with a dash
     formatted_word=$(echo "$formatted_word" | sed 's/\+/-plus/g')       # Replacing plus with -plus  - Note, plus only occurs in the query "C++"
+    formatted_word=$(echo "$formatted_word" | sed 's/\$/S/g')           # Replacing dollar with uppercase S
+    formatted_word=$(echo "$formatted_word" | tr -d "'")                # Removing apostrophes (single quotes)
 
     echo -e "$formatted_word"
 }

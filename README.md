@@ -85,9 +85,11 @@ jott -q "bit-paired keyboard"
   - [x] Handle . in terms
   - [x] Handle & in terms
   - [x] Handle + in terms
-  - [ ] Handle $ in terms
-  - [ ] Handle ' in terms
+  - [x] Handle $ in terms
+  - [x] Handle ' in terms
   - [ ] Querying bot returns barfulation
+  - [ ] Handle the query "Compu$erve". Dollar doesn't like being inside a terminal string and needs to be escaped.
+  - [ ] Apostrophes inside contractions are replaced with a dash but are omitted completely when used in possessive form.
   - [ ] Handle query "Bzzzt! Wrong."
   - [ ] If punctuation is at the end 
 - [x] Install instructions on README.md
