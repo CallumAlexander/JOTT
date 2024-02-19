@@ -82,12 +82,14 @@ jott -q "bit-paired keyboard"
   - [ ] remove case sensitivity from query terms
   - [x] Handle ! in terms
   - [x] Handle / in terms
-  - [ ] Handle . in terms
+  - [x] Handle . in terms
   - [x] Handle & in terms
-  - [ ] Handle + in terms
+  - [x] Handle + in terms
   - [ ] Handle $ in terms
   - [ ] Handle ' in terms
   - [ ] Querying bot returns barfulation
+  - [ ] Handle query "Bzzzt! Wrong."
+  - [ ] If punctuation is at the end 
 - [x] Install instructions on README.md
 - [ ] Option for `n` number of random definition requests
 - [ ] Punctuation and Grammar inclusion if applicable for the term

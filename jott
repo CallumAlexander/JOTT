@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 # Handle config file locations
 jott_installed_config_file="$HOME/.config/jott/jott.cfg"
 jott_local_config_file="./jott.cfg"  # Current working dir (make install not run yet)
@@ -29,22 +27,30 @@ output_to_terminal() {
 
 get_formatted_query_term() {
     local formatted_word="$1"
-    formatted_word=$(echo "$formatted_word" | sed 's/ /-/g')  # Replacing spaces with a dash
-    formatted_word=$(echo "$formatted_word" | sed 's/!/-/g')  # Replacing exclamation marks with a dash
+    formatted_word=$(echo "$formatted_word" | sed 's/ /-/g')            # Replacing spaces with a dash
+    formatted_word=$(echo "$formatted_word" | sed 's/!/-/g')            # Replacing exclamation marks with a dash
     formatted_word=$(echo "$formatted_word" | sed 's/&/-ampersand-/g')  # Replacing ampersand
+    formatted_word=$(echo "$formatted_word" | sed 's/\./-/g')           # Replacing dot with a dash
+    formatted_word=$(echo "$formatted_word" | sed 's/\//-/g')           # Replacing slashes with a dash
+    formatted_word=$(echo "$formatted_word" | sed 's/ /-/g')            # Replacing spaces with a dash
+    formatted_word=$(echo "$formatted_word" | sed 's/\+/-plus/g')       # Replacing plus with -plus  - Note, plus only occurs in the query "C++"
 
     echo -e "$formatted_word"
+}
+construct_specific_url() {
+    local word="$1"
+    local base_url="http://www.catb.org/jargon/html/"
+    local formatted_word=$(get_formatted_query_term "$word")
+    local character_dir=$(echo "$word" | tr '[:lower:]' '[:upper:]')
+    local specific_url="${base_url}${character_dir:0:1}/${formatted_word}.html" # Construct URL
+    echo "$specific_url"
 }
 
 fetch_specific_link_content() {
     local word="$1"
-    local base_url="http://www.catb.org/jargon/html/"
-
-    local formatted_word=$(echo "$word" | sed 's/ /-/g')  # Replacing spaces with a dash
-    formatted_word=$(echo "$formatted_word" | sed 's/\//-/g')
-    local character_dir=$(echo "$word" | tr '[:lower:]' '[:upper:]')
-    local specific_url="${base_url}${character_dir:0:1}/${formatted_word}.html" # Construct URL
+    local specific_url=$(construct_specific_url "$word")
     local link_content=$(curl -s "$specific_url")
+    echo -e "$formatted_word"
     
     if [ -z "$link_content" ]; then
         echo "Error: Unable to fetch content for word $word from $specific_url . The term may not exist!" >&2
@@ -52,7 +58,6 @@ fetch_specific_link_content() {
     fi
 
     echo "$link_content"
-
 }
 
 fetch_random_link_content() {
@@ -87,8 +92,8 @@ handle_definition () {
     local LINK_CONTENT="$1"
     DEFINITION=$(echo "$LINK_CONTENT" | awk -v RS='</dd>' -F '<p>|</p>' '{gsub(/<a[^>]*>|<\/a>/, ""); print $2}')
 
-    DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')  # Removes newlines
-    DEFINITION=$(echo "$DEFINITION" | sed 's/  */ /g')  # Removes any doublespaces
+    DEFINITION=$(echo "$DEFINITION" | tr '\n' ' ')              # Removes newlines
+    DEFINITION=$(echo "$DEFINITION" | sed 's/  */ /g')          # Removes any doublespaces
 
     # Apply ANSI escape code replacement for proper unicode characters
     DEFINITION=$(echo "$DEFINITION" | sed 's/&#8220;/"/g')      # Open double quotes
@@ -166,11 +171,10 @@ if [ "$no_header" = false ]; then
     echo -e "Courtesy of The on-line hacker Jargon File, version 4.4.7\n"
 fi
 
-# Search for methods
 if [ "$1" = "-q" ] && [ -n "$2" ]; then
+    # construct_specific_url "$2"  # For testing purposes
     link_content=$(fetch_specific_link_content "$2")
     WORD=$(echo "$link_content" | grep -o '<b>[^<]*</b>' | sed 's/<b>\(.*\)<\/b>/\1/')
-    echo -e "$WORD"
     if [ -z "$WORD" ]; then
         echo -e "[-] ERROR: Unable to fetch content for word $2. The term probably doesn't exist (yet) in The Jargon File." >&2
         exit 1
