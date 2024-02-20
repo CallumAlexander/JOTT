@@ -14,6 +14,7 @@ As taken from the source, The Jargon File is "_a comprehensive compendium of hac
 
 ## Installation
 
+
 To install JOTT, follow these simple steps:
 
 1. **Clone the Repository:**
@@ -41,6 +42,12 @@ To install JOTT, follow these simple steps:
    ```
 
    This command will copy the program and its config file to the relevant directories, and sure that the program is in PATH.
+
+Dependencies required by JOTT are as follows:
+```
+git awk curl timeout sed grep tr fold
+```
+You can check your dependencies by using the following command `make check_dependencies` after completing points 1 and 2 in the installation process above. 
 
 ## Usage
 
