@@ -2,7 +2,7 @@
 
 Author : _Callum Alexander_ (TheCatThatBarks)
 
-Name credits mainly but not completely : _Callum Groeger_ (groegercesg)
+Name credits mainly, kinda, but not completely : [groegercesg](https://github.com/groegercesg)
 
 ## What is JOTT?
 
